@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block page_content %}
+<div class="row">
+    <!-- <div class="col-md-3">
+        Stuff
+    </div> -->
+
+    <div class="col-md-6 text-left">
+        <div class="light-text display-3 w-25 text-left">I'm grateful for...</div>
+        <form method="post" role="form" enctype="multipart/form-data">
+            {{ grateful_form.csrf_token }}
+            {{ wtf.form_errors(grateful_form, hiddens="only") }}
+            <div class="row form-group">
+                <label class="light-text col-sm-1 text-right">1</label>
+                <div class="col-sm-6">
+                    {{ wtf.form_field(grateful_form.item1, placeholder=placeholders[0], form_type='inline', id="grateful") }}
+                </div>
+            </div>
+            <div class="row">
+                2. {{ wtf.form_field(grateful_form.item2, placeholder=placeholders[1], form_type='inline', id="grateful") }} 
+            </div>
+            <div class="row">
+                3. {{ wtf.form_field(grateful_form.item3, placeholder=placeholders[2], form_type='inline') }} 
+            </div>
+            <div class="row">
+                {{ wtf.form_field(grateful_form.submit, button_map={'submit':'primary'}) }} 
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-3"></div>
+    
+</div>
+{% endblock %}

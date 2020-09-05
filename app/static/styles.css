@@ -1,0 +1,55 @@
+:root {
+    --text-color:#fff4f0;
+    --backg-color: #ffae8e;
+    --accent-color: #ff9b8e;
+}
+
+
+body {
+    background: var(--backg-color) !important;
+}
+
+hr.top {
+    border: none;
+    height: 3px;
+    background-color: var(--text-color); /* Modern Browsers */
+}
+
+.light-text {
+    color: var(--text-color) !important;
+}
+
+.big-text {
+    font-size: 75px;
+}
+
+a:hover {
+    color: var(--text-color) !important;
+}
+
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+    background-color: transparent !important;
+    border-color: var(--text-color) !important;
+    border-width:3px !important;
+    border-radius:10px !important;
+}
+
+.entry-column {
+    max-width: 600px;
+}
+
+
+::placeholder, ::-webkit-input-placeholder {
+    color:#fff4f0;
+    opacity: 0.7;
+}
+
+input[type=text]#grateful {
+    background-color: transparent;
+}
+
+input[type=text]:focus#grateful {
+    border: 3px solid #555;
+}
+
+  
