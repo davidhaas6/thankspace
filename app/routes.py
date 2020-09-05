@@ -29,10 +29,9 @@ def index():
     return render_template('index.html', grateful_form=form, placeholders=placeholders)
 
 
-@app.route('/u/<handle>')
+@app.route('/@<handle>')
 def profile(handle):
     profile_user = models.User.query.filter_by(handle=handle).first_or_404()
-
     return render_template('profile.html', user=profile_user)
 
 
