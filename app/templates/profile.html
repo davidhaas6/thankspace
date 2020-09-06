@@ -5,6 +5,32 @@
 <div class="big-text light-text">
     @{{user.handle}}
 </div>
+<div class="row">
+    <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
+        {% if current_user.is_anonymous %}
+            
+        {% else %}
+            {% if user == current_user %}
+            <a href="{{url_for('settings')}}">
+                <button type="button" class="btn btn-primary font-weight-bold">Edit Profile</button>
+            </a>
+            {% elif not current_user.is_following(user) %}
+            <p>
+                <form action="{{ url_for('follow', username=user.username) }}" method="post">
+                    {{ form.hidden_tag() }}
+                    {{ form.submit(value='Follow') }}
+                </form>
+            </p>
+            {% else %}
+            <p>
+                <form action="{{ url_for('unfollow', username=user.username) }}" method="post">
+                    {{ form.hidden_tag() }}
+                    {{ form.submit(value='Unfollow') }}
+                </form>
+            </p>
+            {% endif %}
+        {% endif %}
+</div>
 {% for post in user.posts %}
     {{post.item1}}
     {{post.item2}}

@@ -26,4 +26,6 @@ class RegistrationForm(FlaskForm):
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
 
-
+# For following and unfollowing
+class EmptyForm(FlaskForm):
+    submit = SubmitField('Submit')
