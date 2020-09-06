@@ -2,5 +2,27 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block page_content %}
-{{ wtf.quick_form(form) }}
+<form method="post" role="form" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+    {{ wtf.form_errors(form, hiddens="only") }}
+    <div class="row form-group">
+        <label for="handleInput" class="col-md-3 login-label display-3">Handle</label>
+        {{ form.handle(class="ts-form post-form col-md-4", id="handleInput", placeholder='handle') }}
+    </div>
+    <div class="row">
+        <label for="emailInput" class="col-md-3 login-label display-3">Email</label>
+        {{ form.email(class="ts-form post-form col-md-4", id="emailInput", placeholder='email') }}
+    </div>
+    <div class="row">
+        <label for="passwordInput" class="col-md-3 login-label display-3">Password</label>
+        {{ form.password(class="ts-form post-form col-md-4", id="passwordInput", placeholder='pw') }}
+    </div>
+    <div class="row">
+        <label for="password2Input" class="col-md-3 login-label display-4">Verify Password</label>
+        {{ form.password2(class="ts-form post-form col-md-4", id="password2Input", placeholder='pw') }}
+    </div>
+    <div class="row">
+        {{ wtf.form_field(form.submit, button_map={'submit':'primary'}) }} 
+    </div>
+</form>
 {% endblock %}

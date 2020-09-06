@@ -7,22 +7,19 @@
         Stuff
     </div> -->
 
-    <div class="col-md-6 text-left">
-        <div class="light-text display-3 w-25 text-left">I'm grateful for...</div>
+    <div class="col-md-4 text-left">
+        <div class="light-text display-3 w-25 text-left">I'm grateful for</div>
         <form method="post" role="form" enctype="multipart/form-data">
             {{ grateful_form.csrf_token }}
             {{ wtf.form_errors(grateful_form, hiddens="only") }}
-            <div class="row form-group">
-                <label class="light-text col-sm-1 text-right">1</label>
-                <div class="col-sm-6">
-                    {{ wtf.form_field(grateful_form.item1, placeholder=placeholders[0], form_type='inline', id="grateful") }}
-                </div>
+            <div class="row">
+                {{ grateful_form.item1(class="ts-form post-form", placeholder=placeholders[0]) }}
             </div>
             <div class="row">
-                2. {{ wtf.form_field(grateful_form.item2, placeholder=placeholders[1], form_type='inline', id="grateful") }} 
+                {{ grateful_form.item2(class="ts-form post-form", placeholder=placeholders[1]) }}
             </div>
             <div class="row">
-                3. {{ wtf.form_field(grateful_form.item3, placeholder=placeholders[2], form_type='inline') }} 
+                {{ grateful_form.item3(class="ts-form post-form", placeholder=placeholders[2]) }}
             </div>
             <div class="row">
                 {{ wtf.form_field(grateful_form.submit, button_map={'submit':'primary'}) }} 

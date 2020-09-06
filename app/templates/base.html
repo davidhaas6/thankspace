@@ -23,7 +23,7 @@
 
 {% block content %}
 <div class="container-fluid">
-    <div class="page-header" style="margin:30px">
+    <div style="margin:30px">
         <div class="row">
             <div class="col-md-6">
                 <div class='big-text'><a href="{{url_for('index')}}" class='light-text'>thankspace.co</a></div>
@@ -40,6 +40,7 @@
                 
                 </div>
             </div>
+        </div>
     </div>
     
     {% with messages = get_flashed_messages() %}
@@ -53,9 +54,9 @@
     {% endwith %}
     
     <hr class="top">
+
     {% block page_content %}{% endblock %}
 
 </div>
 
 {% endblock %}
-

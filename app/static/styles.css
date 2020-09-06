@@ -1,12 +1,14 @@
 :root {
-    --text-color:#fff4f0;
+    --text-color:#ffe78e; /* Off-white: #fff4f0, Lemon sorbet: #ffe78e,  */
     --backg-color: #ffae8e;
-    --accent-color: #ff9b8e;
+    --accent-color: #ff8ea7; /* Blueberry Muffin: #8ea7ff, Strawberry sorbet: #ff8ea7 */
 }
 
 
 body {
     background: var(--backg-color) !important;
+    margin: 0;
+padding: 0;
 }
 
 hr.top {
@@ -32,24 +34,59 @@ a:hover {
     border-color: var(--text-color) !important;
     border-width:3px !important;
     border-radius:10px !important;
+
+    color: var(--text-color) !important;
+    font-size: 20px !important;
+}
+
+.btn-primary:hover {
+    box-shadow: 0px 5px 10px rgba(255,142,167, 0.7);
+    transform: translateY(-2px);
 }
 
 .entry-column {
     max-width: 600px;
 }
 
+/* * { border: 1px solid red; } */
 
-::placeholder, ::-webkit-input-placeholder {
-    color:#fff4f0;
-    opacity: 0.7;
-}
-
-input[type=text]#grateful {
+.ts-form {
     background-color: transparent;
+
+    /* style font */
+    color: var(--text-color);
+    
+    /* style border */
+    border: 0;
+    outline: 0;
+    box-shadow: inset 0px 0px 0px 0px var(--backg-color);
+
+    border-style:solid;
+    border-bottom: 5px solid var(--text-color);
 }
 
-input[type=text]:focus#grateful {
-    border: 3px solid #555;
+.ts-form:focus {
+    border-bottom: 5px solid var(--text-color);
+}
+ 
+.ts-form::placeholder {
+    color:var(--text-color) !important;
+    opacity: 0.5;
 }
 
-  
+.post-form {
+    /* Size input box */
+    box-sizing: border-box;
+    width: 100%;
+    height: 75px;
+    padding: 10px;
+
+    margin: 15px 0px;
+
+    font-size: 60px;
+}
+
+.login-label {
+    color: var(--text-color);
+}
+
