@@ -8,32 +8,37 @@ from urllib.parse import unquote
 from app import app, db
 from config import Config
 
-from app.forms import GratefulForm, LoginForm, RegistrationForm
+from app.forms import GratefulForm, LoginForm, RegistrationForm, EmptyForm
 from app import models
 
 @app.route('/index', methods=['GET', 'POST'])
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    # New Post
     form = GratefulForm()
     placeholders = random.sample(app.config['PLACEHOLDERS'], 3)
-
     if form.validate_on_submit():
         if current_user.is_authenticated:
             models.create_post(current_user, [form.item1.data, form.item2.data, form.item3.data])
-            return redirect(url_for('profile', handle=current_user.handle))
         else:
             print("not authenticated")
             post_url = url_for('post', item1=form.item1.data, item2=form.item2.data, item3=form.item3.data)
+            # TODO: Make post after registration
             return redirect(url_for('register', next=post_url))
+    
+    # Feed
+    feed = None
+    if current_user.is_authenticated:
+        feed = current_user.followed_posts()
 
     
-    return render_template('index.html', grateful_form=form, placeholders=placeholders)
+    return render_template('index.html', grateful_form=form, placeholders=placeholders, feed=feed)
 
 
 @app.route('/@<handle>')
 def profile(handle):
     profile_user = models.User.query.filter_by(handle=handle).first_or_404(description=f"User @{handle} doesn't exist")
-    return render_template('profile.html', user=profile_user)
+    return render_template('profile.html', user=profile_user, form=EmptyForm())
 
 
 @app.route('/post', methods=['GET', 'POST'])
@@ -56,14 +61,6 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
-
-@app.route('/settings')
-@login_required
-def settings():
-    flash("Settings not yet implemented")
-    return redirect(url_for('index'))
-
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -73,8 +70,9 @@ def login():
     if form.validate_on_submit():
         user = models.User.query.filter_by(email=form.email.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
+            flash('Invalid handle or password')
             return redirect(url_for('login'))
+        print("logging in, remember =",form.remember_me.data)
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
@@ -90,42 +88,51 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/follow/<username>', methods=['POST'])
+@app.route('/settings')
 @login_required
-def follow(username):
+def settings():
+    flash("Settings not yet implemented")
+    return redirect(url_for('index'))
+
+
+@app.route('/follow/<handle>', methods=['POST'])
+@login_required
+def follow(handle):
     form = EmptyForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=username).first()
+        print("Form validated")
+        user = models.User.query.filter_by(handle=handle).first()
         if user is None:
-            flash('User {} not found.'.format(username))
+            flash('User {} not found.'.format(handle))
             return redirect(url_for('index'))
         if user == current_user:
             flash('You cannot follow yourself!')
-            return redirect(url_for('user', username=username))
+            return redirect(url_for('profile', handle=handle))
         current_user.follow(user)
         db.session.commit()
-        flash('You are following {}!'.format(username))
-        return redirect(url_for('user', username=username))
+        flash('You are following {}!'.format(handle))
+        return redirect(url_for('profile', handle=handle))
     else:
+        print("form not validated")
         return redirect(url_for('index'))
 
 
-@app.route('/unfollow/<username>', methods=['POST'])
+@app.route('/unfollow/<handle>', methods=['POST'])
 @login_required
-def unfollow(username):
+def unfollow(handle):
     form = EmptyForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=username).first()
+        user = models.User.query.filter_by(handle=handle).first()
         if user is None:
-            flash('User {} not found.'.format(username))
+            flash('User {} not found.'.format(handle))
             return redirect(url_for('index'))
         if user == current_user:
             flash('You cannot unfollow yourself!')
-            return redirect(url_for('user', username=username))
+            return redirect(url_for('profile', handle=handle))
         current_user.unfollow(user)
         db.session.commit()
-        flash('You are not following {}.'.format(username))
-        return redirect(url_for('user', username=username))
+        flash('You are not following {}.'.format(handle))
+        return redirect(url_for('profile', handle=handle))
     else:
         return redirect(url_for('index'))
 

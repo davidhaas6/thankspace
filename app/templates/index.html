@@ -27,7 +27,21 @@
         </form>
     </div>
 
-    <div class="col-md-3"></div>
+    <div class="col-md-4"></div>
+
+    <div class="col-md-4 text-left">
+        {% if feed %}
+        <div class="h1">Feed</div>
+        <div class="overflow-auto">
+            {% for post in feed %}
+            {{post.item1}}
+            {{post.item2}}
+            {{post.item3}}
+            <br>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
     
 </div>
 {% endblock %}
