@@ -1,4 +1,4 @@
-from flask import render_template, url_for, redirect, flash, request
+from flask import render_template, url_for, redirect, flash, request, abort
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
@@ -18,12 +18,13 @@ def index():
     form = GratefulForm()
     placeholders = random.sample(app.config['PLACEHOLDERS'], 3)
     if form.validate_on_submit():
+        post_url = url_for('post', item1=form.item1.data, item2=form.item2.data, item3=form.item3.data)
+
         if current_user.is_authenticated:
-            models.create_post(current_user, [form.item1.data, form.item2.data, form.item3.data])
+            redirect(post_url)
         else:
-            print("not authenticated")
+            print("not authenticated, redirecting to registration")
             post_url = url_for('post', item1=form.item1.data, item2=form.item2.data, item3=form.item3.data)
-            # TODO: Make post after registration
             return redirect(url_for('register', next=post_url))
     
     # Feed
@@ -41,10 +42,17 @@ def profile(handle):
     return render_template('profile.html', user=profile_user, form=EmptyForm())
 
 
-@app.route('/post', methods=['GET', 'POST'])
+@app.route('/post', methods=['GET'])
 @login_required
-def post(item1, item2, item3):
-    models.create_post(current_user, item1, item2, item3)
+def post():
+    item1 = request.args.get('item1')
+    item2 = request.args.get('item2')
+    item3 = request.args.get('item3')
+    if not item1 and item2 and item3:
+        abort(404)
+
+    models.create_post(current_user, [item1, item2, item3])
+    return redirect(url_for('index'))
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -54,9 +62,17 @@ def register():
 
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = models.create_user(form.handle.data, form.email.data, form.password.data)
-        login_user(user, remember=False)
-        return redirect(url_for('index'))
+        try:
+            user = models.create_user(form.handle.data, form.email.data, form.password.data)
+            login_user(user, remember=False)
+            
+            next_page = request.args.get('next')
+            if not next_page or url_parse(next_page).netloc != '':
+                next_page = url_for('index')
+            return redirect(next_page)
+        except ValueError as e:
+            raise ValueError("User already exists!")
+            #TODO: how to properly handle this?
 
     return render_template('register.html', title='Register', form=form)
 
@@ -68,16 +84,20 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
+        print("Form valid")
         user = models.User.query.filter_by(email=form.email.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid handle or password')
             return redirect(url_for('login'))
-        print("logging in, remember =",form.remember_me.data)
+
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
+            print(next_page, 'redirecting to index')
             next_page = url_for('index')
+        print(next_page, 'redirecting to next_page')
         return redirect(next_page)
+
     return render_template('login.html', title='Sign In', form=form)
 
 
@@ -107,11 +127,11 @@ def follow(handle):
             return redirect(url_for('index'))
         if user == current_user:
             flash('You cannot follow yourself!')
-            return redirect(url_for('profile', handle=handle))
+            return redirect(unquote(url_for('profile', handle=handle)))
         current_user.follow(user)
         db.session.commit()
         flash('You are following {}!'.format(handle))
-        return redirect(url_for('profile', handle=handle))
+        return redirect(unquote(url_for('profile', handle=handle)))
     else:
         print("form not validated")
         return redirect(url_for('index'))
@@ -128,16 +148,18 @@ def unfollow(handle):
             return redirect(url_for('index'))
         if user == current_user:
             flash('You cannot unfollow yourself!')
-            return redirect(url_for('profile', handle=handle))
+            return redirect(unquote(url_for('profile', handle=handle)))
         current_user.unfollow(user)
         db.session.commit()
         flash('You are not following {}.'.format(handle))
-        return redirect(url_for('profile', handle=handle))
+        return redirect(unquote(url_for('profile', handle=handle)))
     else:
         return redirect(url_for('index'))
 
 
-
+@app.errorhandler(404)
+def page_not_found(error):
+   return render_template('404.html', title = '404'), 404
 
 
 

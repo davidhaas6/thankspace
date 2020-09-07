@@ -1,5 +1,6 @@
 from datetime import datetime
 from app import db, login
+from config import Config
 
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -11,8 +12,8 @@ followers = db.Table( 'followers',
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    handle = db.Column(db.String(64), index=True, unique=True)
-    email = db.Column(db.String(120), index=True, unique=True)
+    handle = db.Column(db.String(Config.MAX_HANDLE_LEN), index=True, unique=True)
+    email = db.Column(db.String(Config.MAX_EMAIL_LEN), index=True, unique=True)
     password_hash = db.Column(db.String(128))
 
     posts = db.relationship('Post', backref='author', lazy='dynamic')
@@ -25,7 +26,7 @@ class User(UserMixin, db.Model):
     
 
     def __repr__(self):
-        return f'<User @{self.handle}>'
+        return f'@{self.handle}'
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -55,9 +56,9 @@ class User(UserMixin, db.Model):
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    item1 = db.Column(db.String(50))
-    item2 = db.Column(db.String(50))
-    item3 = db.Column(db.String(50))
+    item1 = db.Column(db.String(Config.MAX_ITEM_LEN))
+    item2 = db.Column(db.String(Config.MAX_ITEM_LEN))
+    item3 = db.Column(db.String(Config.MAX_ITEM_LEN))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
@@ -72,10 +73,20 @@ def load_user(id):
 
 
 def create_user(handle: str, email: str, password: str):
+    # Make sure someone isn't already using this handle or email
+    handle_check = User.query.filter(User.handle == handle).first()
+    email_check = User.query.filter(User.email == email).first()
+    if handle_check:
+        raise ValueError("A user with this handle already exists!")
+    if email_check:
+        raise ValueError("A user with this email already exists!")
+
+    # Create the user
     u = User(handle=handle, email=email)
     u.set_password(password)
     db.session.add(u)
     db.session.commit()
+
     return u
 
 
