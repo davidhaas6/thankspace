@@ -14,4 +14,12 @@ class Config(object):
 
     PLACEHOLDERS = load_json('resources/placeholders.json')['items']
 
+    # Input
+    MAX_HANDLE_LEN = 15
+    MIN_HANDLE_LEN = 4
+    HANDLE_REGEX = r'^\w+$'
+
+    MAX_EMAIL_LEN = 120
+
+    MAX_ITEM_LEN = 30
 
