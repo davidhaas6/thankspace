@@ -1,10 +1,10 @@
 {% extends "bootstrap/base.html" %}
 {% block title %}
-    {% if title %}
-        thankspace.co - {{ title }}
-    {% else %}
-        thankspace, share your blessings
-    {% endif %}
+{% if title %}
+thankspace.co - {{ title }}
+{% else %}
+thankspace, share your blessings
+{% endif %}
 {% endblock %}
 
 {% block head %}
@@ -14,8 +14,9 @@
 
 {% block styles %}
 {{super()}}
-<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static', filename='styles.css') }}">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='clorstyles.css') }}">
+<!-- <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static', filename='styles.css') }}"> -->
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous"> -->
 {% endblock %}
 
 {% block scripts %}
@@ -23,13 +24,13 @@
 
 {% block content %}
 <div class="container-fluid">
-    <div style="margin:30px">
-        <div class="row">
-            <div class="col-md-6">
+    <div class="header-overall">
+        <div class="header">
+            <div class="thankspace">
                 <div class='big-text'><a href="{{url_for('index')}}" class='light-text'>thankspace.co</a></div>
             </div>
-            <div class="col-md-6 text-right">
-                <div class="align-middle">
+            <div class="text-right">
+
                 {% if current_user.is_anonymous %}
                 <a href="{{url_for('register')}}"><button type="button" class="btn btn-primary font-weight-bold">Register</button></a>
                 <a href="{{url_for('login')}}"><button type="button" class="btn btn-primary font-weight-bold">Login</button></a>
@@ -37,23 +38,25 @@
                 <a href="/@{{current_user.handle}}" class="light-text">@{{current_user.handle}}</a>
                 <a href="{{url_for('logout')}}"><button type="button" class="btn btn-primary font-weight-bold">Logout</button></a>
                 {% endif %}
-                
-                </div>
+
             </div>
         </div>
+
+        <hr class="top">
     </div>
-    
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <div class="alert alert-info" role="alert"style="margin-right:30px">{{ message }}</div>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-    
-    <hr class="top">
+
+
+    <div class="messages-i-think">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <div class="alert alert-info" role="alert" style="margin-right:30px">{{ message }}</div>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+    </div>
 
     {% block page_content %}{% endblock %}
 

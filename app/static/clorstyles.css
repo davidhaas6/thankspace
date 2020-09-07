@@ -1,0 +1,132 @@
+:root {
+    --text-color: #fff4f0;
+    /* Off-white: #fff4f0, Lemon sorbet: #ffe78e,  */
+    --backg-color: #ffae8e;
+    --accent-color: #ff8ea7;
+    /* Blueberry Muffin: #8ea7ff, Strawberry sorbet: #ff8ea7 */
+}
+
+body, a {
+    font-family: Helvetica, sans-serif;
+    color: var(--text-color);
+}
+
+/* * { border:1px solid red;} */
+
+body {
+    background: var(--backg-color);
+    margin: 0;
+    padding: 0;
+}
+
+.btn {
+    background-color: transparent !important;
+    border-color: var(--text-color) !important;
+    border-width:3px !important;
+    border-radius:10px !important;
+
+    color: var(--text-color) !important;
+}
+
+.container-fluid {
+    justify-items: center;
+}
+
+.header, .user-info {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-overall {
+    width: 100%;
+    height: 100px;
+    position: fixed;
+    background-color: var(--backg-color);
+    z-index: 10;
+}
+
+.header {
+    height: 90px;
+}
+
+.thankspace {
+    font-size: 50px;
+}
+
+.text-right {
+    height: 100%;
+    margin-right: 0;
+    display: flex;
+    align-items: center;
+    margin-right: 20px; /* TODO: Not ideal */
+}
+
+.text-right button {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.text-right a.light-text {
+    margin-right: 25px;
+    font-size: 30px;
+}
+
+hr.top {
+    border: none;
+    margin: 0;
+    height: 3px;
+    background-color: var(--text-color);
+    margin-right: 30px; /* TODO: Not ideal */
+    /* Modern Browsers */
+}
+
+.twt, .messages-i-think {
+    position: relative;
+    top: 100px;
+}
+
+.twt {
+    margin: auto;
+    width: 500px;
+    padding-bottom: 20px;
+    border-left: var(--text-color) 1px solid;
+    border-right: var(--text-color) 1px solid;
+    /* border-bottom: var(--text-color) 1px solid; */
+}
+
+.user-info, .post {
+    margin: auto;
+    margin-top: 20px;
+    width: 90%;
+    justify-content: space-between;
+}
+
+.user-info {
+    border-bottom: var(--text-color) 1px solid;
+}
+
+.user-at {
+    margin-top: 10px;
+    font-size: 20px;
+}
+
+.edit-profile {
+    margin-top: 20px;
+}
+
+.post {
+    padding-bottom: 10px;
+    border-bottom: var(--text-color) 1px solid;
+}
+
+.post p {
+    margin-bottom: 5px;
+}
+
+.post h6 {
+    padding-top: 5px;
+}
+

@@ -2,41 +2,64 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block page_content %}
-<div class="big-text light-text">
-    @{{user.handle}}
-</div>
-<div class="row">
-    <p>{{ user.followers.count() }} followers, {{ user.followed.count() }} following.</p>
-        {% if current_user.is_anonymous %}
-            
-        {% else %}
-            {% if user == current_user %}
+<div class="twt">
+    <div class="user-info">
+        <div class="your-profile">
+            <div class="pfp">
+                <img src="{{ url_for('static', filename='avatar.png')  }}" style="width: auto; height:100px" />
+            </div>
+
+            <div class="user-at">
+                @{{user.handle}}
+            </div>
+
+            <div class="followers">
+                <p><strong>{{ user.followers.count() }}</strong> followers, <strong>{{ user.followed.count() }}</strong> following.</p>
+            </div>
+        </div>
+
+        {% if user == current_user %}
+        <div class="edit-profile">
             <a href="{{url_for('settings')}}">
-                <button type="button" class="btn btn-primary font-weight-bold">Edit Profile</button>
+                <button type="button" class="btn btn-primary font-weight-bold edit-profile">Edit Profile</button>
             </a>
-            {% elif not current_user.is_following(user) %}
+        </div>
+
+        {% elif not current_user.is_anonymous %}
+        <div class="follow-others">
+            {% if not current_user.is_following(user) %}
             <p>
-                <form action="{{ url_for('follow', handle=user.handle) }}" method="post">
-                    {{ form.hidden_tag() }}
-                    {{ form.submit(value='Follow') }}
-                </form>
+            <form action="{{ url_for('follow', handle=user.handle) }}" method="post">
+                {{ form.hidden_tag() }}
+                {{ form.submit(value='Follow', class="btn") }}
+            </form>
             </p>
-            {% else %}
+            {% elif user != current_user %}
             <p>
-                <form action="{{ url_for('unfollow', handle=user.handle) }}" method="post">
-                    {{ form.hidden_tag() }}
-                    {{ form.submit(value='Unfollow') }}
-                </form>
+            <form action="{{ url_for('unfollow', handle=user.handle) }}" method="post">
+                {{ form.hidden_tag() }}
+                {{ form.submit(value='Unfollow', class="btn") }}
+            </form>
             </p>
             {% endif %}
+        </div>
         {% endif %}
+        
+
+    </div>
+
+
+
+    {% for post in user.posts %}
+    <div class="post">
+        <h5><strong>@{{post.author}}</strong> is grateful for:</h5>
+        <p>{{post.item1}}</p>
+        <p>{{post.item2}}</p>
+        <p>{{post.item3}}</p>
+        <h6><em>{{post.timestamp}}</em></h6>
+    </div>
+    {% endfor %}
+
 </div>
-{% for post in user.posts %}
-    {{post.item1}}
-    {{post.item2}}
-    {{post.item3}}
-    {{post.timestamp}}
-    <br>
-{% endfor %}
 
 {% endblock %}
