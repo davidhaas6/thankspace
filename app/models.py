@@ -5,10 +5,19 @@ from config import Config
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
 followers = db.Table( 'followers', 
      db.Column('follower_id', db.Integer, db.ForeignKey('user.id')), 
      db.Column('followed_id', db.Integer, db.ForeignKey('user.id')) 
  ) 
+
+likes_table = db.Table('likes_table', Base.metadata,
+    db.Column('liker_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('post_id', db.Integer, db.ForeignKey('post.id'))
+)
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -24,6 +33,11 @@ class User(UserMixin, db.Model):
         secondaryjoin=(followers.c.followed_id == id),
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
     
+    liked_posts = db.relationship(
+        "Post",
+        secondary=likes_table,
+        back_populates="likers")
+
 
     def __repr__(self):
         return f'@{self.handle}'
@@ -46,6 +60,18 @@ class User(UserMixin, db.Model):
         return self.followed.filter(
             followers.c.followed_id == user.id).count() > 0
 
+    def like(self, post):
+        if not self.has_liked(post):
+            self.liked_posts.append(post)
+
+    def unlike(self, post):
+        if self.has_liked(post):
+            self.liked_posts.remove(post)
+    
+    def has_liked(self, post):
+        return self.liked_posts.filter(
+            likes_table.c.post_id == post.id).count() > 0
+    
     def followed_posts(self):
         followed = Post.query.join(
             followers, (followers.c.followed_id == Post.user_id)).filter(
@@ -54,17 +80,26 @@ class User(UserMixin, db.Model):
         return followed.union(own).order_by(Post.timestamp.desc())
 
 
-class Post(db.Model):
+class Post(Base, db.Model):
+    # Authorship and record keeping
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+    # Post contents
     item1 = db.Column(db.String(Config.MAX_ITEM_LEN))
     item2 = db.Column(db.String(Config.MAX_ITEM_LEN))
     item3 = db.Column(db.String(Config.MAX_ITEM_LEN))
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    
+    
+    # The people who liked the post
+    likes = db.relationship(
+        "User",
+        secondary=likes_table,
+        back_populates="liked_posts")
 
     def __repr__(self):
         return f'<Post {self.id} by @{User.query.filter(User.id == self.user_id).first()}>'
-
 
 
 @login.user_loader

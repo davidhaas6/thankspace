@@ -18,14 +18,10 @@ def index():
     form = GratefulForm()
     placeholders = random.sample(app.config['PLACEHOLDERS'], 3)
     if form.validate_on_submit():
-        post_url = url_for('post', item1=form.item1.data, item2=form.item2.data, item3=form.item3.data)
-
         if current_user.is_authenticated:
-            redirect(post_url)
+            models.create_post(current_user, [form.item1.data, form.item1.data, form.item1.data])
         else:
-            print("not authenticated, redirecting to registration")
-            post_url = url_for('post', item1=form.item1.data, item2=form.item2.data, item3=form.item3.data)
-            return redirect(url_for('register', next=post_url))
+            return redirect(url_for('register'))
     
     # Feed
     feed = None
@@ -118,7 +114,7 @@ def settings():
 @app.route('/follow/<handle>', methods=['POST'])
 @login_required
 def follow(handle):
-    form = EmptyForm()
+    form = EmptyForm()  # Empty form for CSRF protection
     if form.validate_on_submit():
         print("Form validated")
         user = models.User.query.filter_by(handle=handle).first()
@@ -140,7 +136,7 @@ def follow(handle):
 @app.route('/unfollow/<handle>', methods=['POST'])
 @login_required
 def unfollow(handle):
-    form = EmptyForm()
+    form = EmptyForm()  # Empty form for CSRF protection
     if form.validate_on_submit():
         user = models.User.query.filter_by(handle=handle).first()
         if user is None:
@@ -156,6 +152,30 @@ def unfollow(handle):
     else:
         return redirect(url_for('index'))
 
+
+@app.route('/like/<postid>', methods=['POST'])
+@login_required
+def like(postid):
+    form = EmptyForm()  # Empty form for CSRF protection
+    if form.validate_on_submit():
+        print("Form validated")
+        post = models.Post.query.filter_by(id=postid).first()
+        if post is None:
+            flash(f'Post {post} not found.')
+            return redirect(url_for('index'))
+
+        # TODO: Make this its own function
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            print(next_page, 'redirecting to index')
+            next_page = url_for('index')
+
+        current_user.like(post)
+        db.session.commit()
+        return redirect(unquote(url_for('profile', handle=handle)))
+    else:
+        print("form not validated")
+        return redirect(url_for('index'))
 
 @app.errorhandler(404)
 def page_not_found(error):
