@@ -2,46 +2,51 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block page_content %}
-<div class="row">
-    <!-- <div class="col-md-3">
+<!-- <div class="col-md-3">
         Stuff
     </div> -->
-
-    <div class="col-md-4 text-left">
-        <div class="light-text display-3 w-25 text-left">I'm grateful for</div>
-        <form method="post" role="form" enctype="multipart/form-data">
-            {{ grateful_form.csrf_token }}
-            {{ wtf.form_errors(grateful_form, hiddens="only") }}
-            <div class="row">
-                {{ grateful_form.item1(class="ts-form post-form", placeholder=placeholders[0]) }}
+<div class="index">
+    <div class="half-twt half-twt1">
+        <div class="grateful-form">
+            <div class="light-text display-3 w-25 text-left">
+                <h1>I'm grateful for:</h1>
             </div>
-            <div class="row">
-                {{ grateful_form.item2(class="ts-form post-form", placeholder=placeholders[1]) }}
-            </div>
-            <div class="row">
-                {{ grateful_form.item3(class="ts-form post-form", placeholder=placeholders[2]) }}
-            </div>
-            <div class="row">
-                {{ wtf.form_field(grateful_form.submit, button_map={'submit':'primary'}) }} 
-            </div>
-        </form>
+            <form method="post" role="form" enctype="multipart/form-data">
+                {{ grateful_form.csrf_token }}
+                {{ wtf.form_errors(grateful_form, hiddens="only") }}
+                <div class="grateful-item">
+                    {{ grateful_form.item1(class="ts-form post-form grateful-item-form", placeholder=placeholders[0]) }}
+                </div>
+                <div class="grateful-item">
+                    {{ grateful_form.item2(class="ts-form post-form grateful-item-form", placeholder=placeholders[1]) }}
+                </div>
+                <div class="grateful-item">
+                    {{ grateful_form.item3(class="ts-form post-form grateful-item-form", placeholder=placeholders[2]) }}
+                </div>
+                <div class="grateful-submit">
+                    {{ wtf.form_field(grateful_form.submit, button_map={'submit':'primary'}) }}
+                </div>
+            </form>
+        </div>
     </div>
 
-    <div class="col-md-4"></div>
-
-    <div class="col-md-4 text-left">
-        {% if feed %}
-        <div class="h1">Feed</div>
-        <div class="overflow-auto">
+    <div class="half-twt half-twt2">
+        <div class="twt-feed">
+            {% if feed %}
+            <h1>Feed</h1>
             {% for post in feed %}
-            {{post.item1}}
-            {{post.item2}}
-            {{post.item3}}
-            <br>
+            <div class="post">
+                <h5><strong>{{post.author}}</strong> is grateful for:</h5>
+                <p>{{post.item1}}</p>
+                <p>{{post.item2}}</p>
+                <p>{{post.item3}}</p>
+                <h6><em>{{post.timestamp}}</em></h6>
+            </div>
+
             {% endfor %}
         </div>
         {% endif %}
     </div>
-    
 </div>
+
 {% endblock %}

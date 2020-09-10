@@ -22,9 +22,8 @@ body {
 .btn {
     background-color: transparent !important;
     border-color: var(--text-color) !important;
-    border-width:3px !important;
-    border-radius:10px !important;
-
+    border-width: 3px !important;
+    border-radius: 10px !important;
     color: var(--text-color) !important;
 }
 
@@ -61,7 +60,8 @@ body {
     margin-right: 0;
     display: flex;
     align-items: center;
-    margin-right: 20px; /* TODO: Not ideal */
+    margin-right: 20px;
+    /* TODO: Not ideal */
 }
 
 .text-right button {
@@ -71,7 +71,8 @@ body {
 
 .text-right a.light-text {
     margin-right: 25px;
-    font-size: 30px;
+    padding-top: 5px;
+    font-size: 20px;
 }
 
 hr.top {
@@ -79,11 +80,14 @@ hr.top {
     margin: 0;
     height: 3px;
     background-color: var(--text-color);
-    margin-right: 30px; /* TODO: Not ideal */
+    margin-right: 30px;
+    /* TODO: Not ideal */
     /* Modern Browsers */
 }
 
-.twt, .messages-i-think {
+/* MULTIPLE PAGES INVOLVING SPACING FROM HEADER AND TWT CLASS */
+
+.twt, .follow-unf {
     position: relative;
     top: 100px;
 }
@@ -91,18 +95,21 @@ hr.top {
 .twt {
     margin: auto;
     width: 500px;
-    padding-bottom: 20px;
+    /* padding-bottom: 20px; */
     border-left: var(--text-color) 1px solid;
     border-right: var(--text-color) 1px solid;
     /* border-bottom: var(--text-color) 1px solid; */
 }
 
-.user-info, .post {
+.user-info, .grateful-form, .twt-feed, .register-form {
+    /* Stuff that goes inside twt usually */
     margin: auto;
     margin-top: 20px;
     width: 90%;
     justify-content: space-between;
 }
+
+/* PROFILE.HTML EXCLUSIVE */
 
 .user-info {
     border-bottom: var(--text-color) 1px solid;
@@ -130,3 +137,124 @@ hr.top {
     padding-top: 5px;
 }
 
+/* INDEX.HTML EXCLUSIVE (WRITE WHAT YOURE THANKFUL FOR AND SEE FEED OF FOLLOWING) */
+
+.index {
+    /* display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around; */
+}
+
+.half-twt {
+
+}
+
+.half-twt1 {
+    position: fixed;
+    top: 120px;
+    margin-left: 2%;
+    width: 40%;
+    max-width: 400px;
+    border: var(--text-color) 1px solid;
+}
+
+.half-twt2 {
+    position: relative;
+    top: 120px;
+    left: 40%;
+    
+    width: 50%;
+    max-width: 500px;
+    border-left: var(--text-color) 1px solid;
+    border-right: var(--text-color) 1px solid;
+    border-top: var(--text-color) 1px solid;
+}
+
+/* .half-twt1 {
+    margin-left: 2%;
+    width: 370px;
+    border: var(--text-color) 1px solid;
+    position: fixed;
+    top: 120px;
+}
+
+.half-twt2 {
+    width: 500px;
+    border-left: var(--text-color) 1px solid;
+    border-right: var(--text-color) 1px solid;
+    position: relative;
+    top: 120px;
+    left: 450px; 
+    border-top: var(--text-color) 1px solid;
+} */
+
+.grateful-form {
+    /* border-bottom: var(--text-color) 1px double; */
+    margin-bottom: 20px;
+}
+
+.grateful-item, .grateful-form h1, .login-item, .login-submit {
+    margin-bottom: 20px;
+}
+
+.grateful-item-form {
+    width: 100%;
+}
+
+::placeholder {
+    color: var(--text-color);
+    opacity: 0.5;
+}
+
+input * {
+    position: relative;
+}
+
+input {
+    background-color: transparent !important;
+    border: none;
+    outline: none;
+    border-bottom: var(--text-color) 1px solid;
+    box-shadow: inset 0px 0px 0px 0px var(--backg-color);
+    color: var(--text-color) !important;
+    font-size: 36px;
+    overflow: hidden;
+}
+
+#item1, #item2, #item3 {
+    font-size: 20px;
+}
+
+.twt-feed h1 {
+    padding-bottom: 10px;
+    border-bottom: var(--text-color) 1px solid;
+}
+
+/* REGISTER AND LOGIN PAGES */
+
+.register-label, .register-form input {
+    font-size: 20px;
+}
+
+/* .register-label {
+    width: 40%;
+    text-align: left;
+} */
+
+.register-form input {
+    width: 100%;
+}
+
+.remember {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#rememberInput {
+    width: 10%;
+}
+
+
+/* MEDIA RULES FOR INDEX */
+
+/* TODO */

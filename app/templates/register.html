@@ -2,27 +2,33 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block page_content %}
-<form method="post" role="form" enctype="multipart/form-data">
-    {{ form.csrf_token }}
-    {{ wtf.form_errors(form, hiddens="only") }}
-    <div class="row form-group">
-        <label for="handleInput" class="col-md-3 login-label display-3">Handle</label>
-        {{ form.handle(class="ts-form post-form col-md-4", id="handleInput", placeholder='handle') }}
+<div class="twt">
+    <div class="register-form">
+        <form method="post" role="form" enctype="multipart/form-data">
+            {{ form.csrf_token }}
+            {{ wtf.form_errors(form, hiddens="only") }}
+            <div class="login-item">
+                <label for="handleInput" class="register-label">Handle</label>
+                {{ form.handle(class="ts-form post-form col-md-4", id="handleInput", placeholder='handle') }}
+            </div>
+            <div class="login-item">
+                <label for="emailInput" class="register-label">Email</label>
+                {{ form.email(class="ts-form post-form col-md-4", id="emailInput", placeholder='email') }}
+            </div>
+            <div class="login-item">
+                <label for="passwordInput" class="register-label">Password</label>
+                {{ form.password(class="ts-form post-form col-md-4", id="passwordInput", placeholder='pw') }}
+            </div>
+            <div class="login-item">
+                <label for="password2Input" class="register-label">Verify Password</label>
+                {{ form.password2(class="ts-form post-form col-md-4", id="password2Input", placeholder='pw') }}
+            </div>
+            <div class="login-submit">
+                {{ wtf.form_field(form.submit, button_map={'submit':'primary'}) }} 
+            </div>
+        </form>
     </div>
-    <div class="row">
-        <label for="emailInput" class="col-md-3 login-label display-3">Email</label>
-        {{ form.email(class="ts-form post-form col-md-4", id="emailInput", placeholder='email') }}
-    </div>
-    <div class="row">
-        <label for="passwordInput" class="col-md-3 login-label display-3">Password</label>
-        {{ form.password(class="ts-form post-form col-md-4", id="passwordInput", placeholder='pw') }}
-    </div>
-    <div class="row">
-        <label for="password2Input" class="col-md-3 login-label display-4">Verify Password</label>
-        {{ form.password2(class="ts-form post-form col-md-4", id="password2Input", placeholder='pw') }}
-    </div>
-    <div class="row">
-        {{ wtf.form_field(form.submit, button_map={'submit':'primary'}) }} 
-    </div>
-</form>
+    
+</div>
+
 {% endblock %}
