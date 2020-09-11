@@ -5,16 +5,14 @@ from config import Config
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
 
-followers = db.Table( 'followers', 
+followers = db.Table('followers', 
      db.Column('follower_id', db.Integer, db.ForeignKey('user.id')), 
      db.Column('followed_id', db.Integer, db.ForeignKey('user.id')) 
- ) 
+) 
 
-likes_table = db.Table('likes_table', Base.metadata,
+likes_table = db.Table('likes_table', 
     db.Column('liker_id', db.Integer, db.ForeignKey('user.id')),
     db.Column('post_id', db.Integer, db.ForeignKey('post.id'))
 )
@@ -36,7 +34,7 @@ class User(UserMixin, db.Model):
     liked_posts = db.relationship(
         "Post",
         secondary=likes_table,
-        back_populates="likers")
+        back_populates="likes")
 
 
     def __repr__(self):
@@ -80,7 +78,7 @@ class User(UserMixin, db.Model):
         return followed.union(own).order_by(Post.timestamp.desc())
 
 
-class Post(Base, db.Model):
+class Post(UserMixin, db.Model):
     # Authorship and record keeping
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
