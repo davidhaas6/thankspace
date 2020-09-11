@@ -1,10 +1,6 @@
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
 
 {% block page_content %}
-<!-- <div class="col-md-3">
-        Stuff
-    </div> -->
 <div class="index">
     <div class="half-twt half-twt1">
         <div class="grateful-form">
@@ -13,7 +9,13 @@
             </div>
             <form method="post" role="form" enctype="multipart/form-data">
                 {{ grateful_form.csrf_token }}
-                {{ wtf.form_errors(grateful_form, hiddens="only") }}
+
+                {% for field, errors in grateful_form.errors.items() %}
+                <div class="alert alert-error">
+                    {{ grateful_form[field].label }}: {{ ', '.join(errors) }}
+                </div>
+                {% endfor %}
+
                 <div class="grateful-item">
                     {{ grateful_form.item1(class="ts-form post-form grateful-item-form", placeholder=placeholders[0]) }}
                 </div>
@@ -24,7 +26,7 @@
                     {{ grateful_form.item3(class="ts-form post-form grateful-item-form", placeholder=placeholders[2]) }}
                 </div>
                 <div class="grateful-submit">
-                    {{ wtf.form_field(grateful_form.submit, button_map={'submit':'primary'}) }}
+                    {{ grateful_form.submit(class="btn") }}
                 </div>
             </form>
         </div>

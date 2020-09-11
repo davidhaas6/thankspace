@@ -1,6 +1,7 @@
 from flask import render_template, url_for, redirect, flash, request, abort
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
+from wtforms.validators import ValidationError
 
 import random
 from urllib.parse import unquote
@@ -38,19 +39,6 @@ def profile(handle):
     return render_template('profile.html', user=profile_user, form=EmptyForm())
 
 
-@app.route('/post', methods=['GET'])
-@login_required
-def post():
-    item1 = request.args.get('item1')
-    item2 = request.args.get('item2')
-    item3 = request.args.get('item3')
-    if not item1 and item2 and item3:
-        abort(404)
-
-    models.create_post(current_user, [item1, item2, item3])
-    return redirect(url_for('index'))
-
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -61,14 +49,8 @@ def register():
         try:
             user = models.create_user(form.handle.data, form.email.data, form.password.data)
             login_user(user, remember=False)
-            
-            next_page = request.args.get('next')
-            if not next_page or url_parse(next_page).netloc != '':
-                next_page = url_for('index')
-            return redirect(next_page)
         except ValueError as e:
-            raise ValueError("User already exists!")
-            #TODO: how to properly handle this?
+            flash(e)
 
     return render_template('register.html', title='Register', form=form)
 
@@ -80,19 +62,11 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
-        print("Form valid")
-        user = models.User.query.filter_by(email=form.email.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash('Invalid handle or password')
-            return redirect(url_for('login'))
-
-        login_user(user, remember=form.remember_me.data)
-        next_page = request.args.get('next')
-        if not next_page or url_parse(next_page).netloc != '':
-            print(next_page, 'redirecting to index')
-            next_page = url_for('index')
-        print(next_page, 'redirecting to next_page')
-        return redirect(next_page)
+        try:
+            user = models.validate_user(form.email.data, form.password.data)
+            login_user(user, remember=form.remember_me.data)
+        except ValueError as e:
+            flash(e)
 
     return render_template('login.html', title='Sign In', form=form)
 
@@ -172,7 +146,7 @@ def like(postid):
 
         current_user.like(post)
         db.session.commit()
-        return redirect(unquote(url_for('profile', handle=handle)))
+        return redirect(unquote(url_for('profile', handle=post.author.handle)))
     else:
         print("form not validated")
         return redirect(url_for('index'))

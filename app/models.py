@@ -122,6 +122,12 @@ def create_user(handle: str, email: str, password: str):
 
     return u
 
+def validate_user(email: str, password: str):
+    user = User.query.filter_by(email=email).first()
+    if user is None or not user.check_password(password):
+        raise ValueError("Invalid email or password.")
+    return user
+
 
 def create_post(user: User, items: list):
     if len(items) != 3:

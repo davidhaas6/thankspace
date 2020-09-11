@@ -1,12 +1,17 @@
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
 
 {% block page_content %}
 <div class="twt">
     <div class="register-form">
         <form method="post" role="form" enctype="multipart/form-data">
             {{ form.csrf_token }}
-            {{ wtf.form_errors(form, hiddens="only") }}
+
+            {% for field, errors in form.errors.items() %}
+            <div class="alert alert-error">
+                {{ form[field].label }}: {{ ', '.join(errors) }}
+            </div>
+            {% endfor %}
+
             <div class="login-item">
                 <label for="handleInput" class="register-label">Handle</label>
                 {{ form.handle(class="ts-form post-form col-md-4", id="handleInput", placeholder='handle') }}
@@ -24,7 +29,7 @@
                 {{ form.password2(class="ts-form post-form col-md-4", id="password2Input", placeholder='pw') }}
             </div>
             <div class="login-submit">
-                {{ wtf.form_field(form.submit, button_map={'submit':'primary'}) }} 
+                {{ form.submit(class="btn") }} 
             </div>
         </form>
     </div>

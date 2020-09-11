@@ -3,6 +3,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Regexp
 
 from config import Config
+from app import db
 from app.models import User
 
 

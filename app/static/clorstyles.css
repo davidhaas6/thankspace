@@ -27,7 +27,7 @@ body {
     color: var(--text-color) !important;
 }
 
-.container-fluid {
+.base-container {
     justify-items: center;
 }
 
